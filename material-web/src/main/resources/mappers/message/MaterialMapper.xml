@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace  命名空间 必须唯一-->
+<!--使用接口与xml进行绑定 namespace的值与接口路径相同-->
+<mapper namespace="com.snut.material.dao.message.MaterialDao">
+
+
+
+
+    <insert id="saveMaterial" parameterType="MaterialEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into material(title,description,img,user_id,categorie_id,upload_time,format_id,is_free,file_path,price,operator,opertime)
+                    values(#{title}, #{description}, #{img}, #{userId}, #{categorieId}, #{uploadTime}, #{formatId}, #{isFree}, #{filePath}, #{price}, #{operator}, #{opertime})
+    </insert>
+    <update id="updateMaterial" parameterType="MaterialEntity">
+        update material set title = #{title}, description = #{description}, img = #{img},
+                            categorie_id = #{categorieId},
+                            format_id = #{formatId}, is_free = #{isFree}, file_path = #{filePath}, price = #{price}, operator = #{operator}, opertime = #{opertime}
+                    where id = #{id}
+    </update>
+    <update id="changeStata">
+        update material set flag=#{flag} where id = #{row}
+    </update>
+    <delete id="delete">
+        delete from material where id = #{id}
+    </delete>
+
+
+    <select id="findMaterialList" resultType="MaterialEntity">
+        SELECT
+          *
+        FROM material ORDER BY opertime DESC
+    </select>
+    <select id="findMaterialByid" resultType="MaterialEntity">
+        SELECT
+            *
+        FROM material where id = #{id}
+    </select>
+    <select id="findMaterial" resultType="MaterialEntity">
+        SELECT m.id,m.title,m.description,m.img,u.name userName,c.name categorieName,m.upload_time,
+               f.name formatName,m.is_free,m.flag,m.file_path,m.price,m.operator,m.opertime from material m
+        INNER JOIN format f
+                   on m.format_id = f.id
+        INNER JOIN categorie c
+                   on m.categorie_id = c.id
+        INNER JOIN user u
+                   on m.user_id = u.id
+        where m.title like "%"#{account}"%" or m.description like "%"#{account}"%" or u.name like "%"#{account}"%"
+           or c.name like "%"#{account}"%" or f.name like "%"#{account}"%"
+
+    </select>
+    <select id="findMaterialByFormatIdAndCategorieId" resultType="com.snut.material.model.MaterialEntity">
+        SELECT m.id,m.title,m.description,m.img,u.name userName,c.name categorieName,m.upload_time,
+               f.name formatName,m.is_free,m.flag,m.file_path,m.price,m.operator,m.opertime from material m
+        INNER JOIN format f
+                   on m.format_id = f.id
+        INNER JOIN categorie c
+                   on m.categorie_id = c.id
+        INNER JOIN user u
+                   on m.user_id = u.id
+        where m.format_id = #{formatId} and m.categorie_id = #{categorieId}
+    </select>
+    <select id="getNewFirstMaterial" resultType="com.snut.material.model.MaterialEntity">
+        SELECT
+            *
+        FROM material ORDER BY opertime DESC limit 0,1
+    </select>
+    <select id="findMaterialsByFormatId" resultType="com.snut.material.model.MaterialEntity">
+        SELECT m.id,m.title,m.description,m.img,u.name userName,c.name categorieName,m.upload_time,
+               f.name formatName,m.is_free,m.flag,m.file_path,m.price,m.operator,m.opertime from material m
+        INNER JOIN format f
+                   on m.format_id = f.id
+        INNER JOIN categorie c
+                   on m.categorie_id = c.id
+        INNER JOIN user u
+                   on m.user_id = u.id
+        where m.format_id = #{formatId}
+        ORDER BY m.upload_time DESC
+    </select>
+    <select id="findMaterialsByUserId" resultType="com.snut.material.model.MaterialEntity">
+        SELECT
+            *
+        FROM material where user_id = #{userId} ORDER BY opertime DESC
+    </select>
+    <select id="findNoticeReqByUserId" resultType="com.snut.material.model.MaterialEntity">
+        SELECT
+            *
+        FROM notice_req where user_id = #{userId} ORDER BY req_time DESC
+    </select>
+    <select id="findCollectionByUserId" resultType="com.snut.material.model.CollectionEntity">
+        select c.id,m.id materialId,u.name userName,m.title materialTitle,m.img,c.time from collection c
+        INNER JOIN user u
+                   on c.user_id = u.id
+        INNER JOIN material m
+                   on c.material_id = m.id
+        where c.user_id = #{userId}
+        ORDER BY time DESC
+    </select>
+    <select id="findMaterialInfoByUserId" resultType="com.snut.material.model.MaterialEntity">
+        SELECT
+            *
+        FROM material where id = #{id} ORDER BY opertime DESC
+    </select>
+    <select id="findMaterialByFormatIdAndIsFree" resultType="com.snut.material.model.MaterialEntity">
+        SELECT m.id,m.title,m.description,m.img,u.name userName,c.name categorieName,m.upload_time,
+               f.name formatName,m.is_free,m.flag,m.file_path,m.price,m.operator,m.opertime from material m
+                INNER JOIN format f
+                           on m.format_id = f.id
+                INNER JOIN categorie c
+                           on m.categorie_id = c.id
+                INNER JOIN user u
+                           on m.user_id = u.id
+        where m.format_id = #{formatId} and m.is_free = #{isFree}
+    </select>
+    <select id="findMaterialByTitle" resultType="com.snut.material.model.MaterialEntity">
+        select id from material where title = #{title}
+    </select>
+</mapper>
+

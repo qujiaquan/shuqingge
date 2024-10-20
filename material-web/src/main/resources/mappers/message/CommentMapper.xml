@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace  命名空间 必须唯一-->
+<!--使用接口与xml进行绑定 namespace的值与接口路径相同-->
+<mapper namespace="com.snut.material.dao.message.CommentDao">
+
+
+
+
+    <insert id="saveComment" parameterType="CommentEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into comment(comment,user_id,material_id,time)
+                    values(#{comment},#{userId},#{materialId},#{time})
+    </insert>
+    <update id="updateComment" parameterType="CommentEntity">
+        update comment set name=#{name},operator=#{operator},opertime=#{opertime}
+                    where id = #{id}
+    </update>
+    <update id="changeStata">
+        update comment set flag=#{flag} where id = #{row}
+    </update>
+    <delete id="delete">
+        delete from comment where id = #{id}
+    </delete>
+
+
+    <select id="findCommentList" resultType="CommentEntity">
+        SELECT c.id,c.comment,u.name userName, m.title materialTitle,c.time from comment c
+        INNER JOIN user u
+                   ON c.user_id = u.id
+        INNER JOIN material m
+                   ON c.material_id = m.id
+        ORDER BY time DESC
+    </select>
+    <select id="findCommentByid" resultType="CommentEntity">
+        SELECT
+            *
+        FROM comment where id = #{id}
+    </select>
+    <select id="findComment" resultType="CommentEntity">
+        SELECT c.id,c.comment,u.name userName, m.title materialTitle,c.time from comment c
+        INNER JOIN user u
+                   ON c.user_id = u.id
+        INNER JOIN material m
+                   ON c.material_id = m.id
+        where c.comment like "%"#{account}"%" or u.name like "%"#{account}"%"
+        or m.title like "%"#{account}"%"
+    </select>
+    <select id="findCommentByUserId" resultType="com.snut.material.model.CommentEntity">
+        SELECT c.id,c.comment,u.name userName, m.title materialTitle,c.time from comment c
+         INNER JOIN user u
+                    ON c.user_id = u.id
+         INNER JOIN material m
+                    ON c.material_id = m.id
+         where c.user_id = #{userId}
+        ORDER BY time DESC
+    </select>
+    <select id="findMaterialComment" resultType="com.snut.material.model.CommentEntity">
+        SELECT c.id,c.comment,u.name userName,u.img userImg, c.time from comment c
+        INNER JOIN user u
+                   ON c.user_id = u.id where c.user_id = #{userId} and c.material_id = #{materialId}
+        ORDER BY time DESC
+    </select>
+</mapper>
+

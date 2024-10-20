@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace  命名空间 必须唯一-->
+<!--使用接口与xml进行绑定 namespace的值与接口路径相同-->
+<mapper namespace="com.snut.material.dao.message.PaymentsDao">
+
+
+
+
+    <insert id="savePayments" parameterType="PaymentsEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into payments(user_id,material_id,amount,payment_time)
+                    values(#{userId},#{materialId},#{amount},#{paymentTime})
+    </insert>
+    <update id="updatePayments" parameterType="PaymentsEntity">
+        update payments set name=#{name},operator=#{operator},opertime=#{opertime}
+                    where id = #{id}
+    </update>
+    <update id="changeStata">
+        update payments set flag=#{flag} where id = #{row}
+    </update>
+    <delete id="delete">
+        delete from payments where id = #{id}
+    </delete>
+
+
+    <select id="findPaymentsList" resultType="PaymentsEntity">
+        SELECT c.id,c.amount,u.name userName, m.title materialTitle,c.payment_time from payments c
+        INNER JOIN user u
+                   ON c.user_id = u.id
+        INNER JOIN material m
+                   ON c.material_id = m.id
+        ORDER BY time DESC
+    </select>
+    <select id="findPaymentsByid" resultType="PaymentsEntity">
+        SELECT
+            *
+        FROM payments where id = #{id}
+    </select>
+    <select id="findPayments" resultType="PaymentsEntity">
+        SELECT c.id,c.amount,u.name userName, m.title materialTitle,c.payment_time from payments c
+        INNER JOIN user u
+                   ON c.user_id = u.id
+        INNER JOIN material m
+                   ON c.material_id = m.id
+        where c.amount like "%"#{account}"%" or u.name like "%"#{account}"%"
+           or m.title like "%"#{account}"%"
+    </select>
+    <select id="findPaymentByUserId" resultType="com.snut.material.model.PaymentsEntity">
+        SELECT c.id,c.amount,u.name userName, m.title materialTitle,c.payment_time from payments c
+         INNER JOIN user u
+                    ON c.user_id = u.id
+         INNER JOIN material m
+                    ON c.material_id = m.id
+         where c.user_id = #{userId}
+        ORDER BY time DESC
+    </select>
+</mapper>
+

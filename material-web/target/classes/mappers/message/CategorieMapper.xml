@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace  命名空间 必须唯一-->
+<!--使用接口与xml进行绑定 namespace的值与接口路径相同-->
+<mapper namespace="com.snut.material.dao.message.CategorieDao">
+
+
+
+
+    <insert id="saveCategorie" parameterType="CategorieEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into categorie(name,format_id,operator,opertime)
+                    values(#{name},#{formatId},#{operator},#{opertime})
+    </insert>
+    <update id="updateCategorie" parameterType="CategorieEntity">
+        update categorie set name=#{name},format_id = #{formatId},operator=#{operator},opertime=#{opertime}
+                    where id = #{id}
+    </update>
+    <update id="changeStata">
+        update categorie set flag=#{flag} where id = #{row}
+    </update>
+    <delete id="delete">
+        delete from categorie where id = #{id}
+    </delete>
+
+
+    <select id="findCategorieList" resultType="CategorieEntity">
+        SELECT c.id,c.name,c.operator,c.opertime,f.name formatName FROM categorie c
+            inner join format f on c.format_id = f.id ORDER BY opertime DESC
+    </select>
+    <select id="findCategorieByid" resultType="CategorieEntity">
+        SELECT
+            *
+        FROM categorie where id = #{id}
+    </select>
+    <select id="findCategorie" resultType="CategorieEntity">
+        SELECT c.id,c.name,c.operator,c.opertime,f.name formatName FROM categorie c
+        inner join format f on c.format_id = f.id where f.name like "%"#{account}"%"
+            or c.name like "%"#{account}"%"
+    </select>
+    <select id="findCategorieByFormatId" resultType="com.snut.material.model.FormatEntity">
+        select * from categorie where format_id = #{formatId}
+    </select>
+</mapper>
+

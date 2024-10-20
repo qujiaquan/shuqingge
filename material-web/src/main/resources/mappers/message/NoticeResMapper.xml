@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace  命名空间 必须唯一-->
+<!--使用接口与xml进行绑定 namespace的值与接口路径相同-->
+<mapper namespace="com.snut.material.dao.message.NoticeResDao">
+
+
+
+
+    <insert id="saveNoticeRes" parameterType="NoticeResEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into notice_res(title,description,notice_req_id,user_id,material_id,res_time)
+                    values(#{title},#{description},#{noticeReqId},#{userId},#{materialId},#{resTime})
+    </insert>
+    <update id="updateNoticeRes" parameterType="NoticeResEntity">
+        update notice_res set name=#{name},operator=#{operator},opertime=#{opertime}
+                    where id = #{id}
+    </update>
+    <update id="changeStata">
+        update notice_res set flag=#{flag} where id = #{row}
+    </update>
+    <delete id="delete">
+        delete from notice_res where id = #{id}
+    </delete>
+
+
+    <select id="findNoticeResList" resultType="NoticeResEntity">
+
+        SELECT ns.title,ns.description,nq.title noticeReqTitle,u.name userName,ns.res_time from notice_res ns
+        INNER JOIN user u
+                   ON ns.user_id = u.id
+        INNER JOIN notice_req nq
+                   on ns.notice_req_id = nq.id
+        ORDER BY res_time DESC
+    </select>
+    <select id="findNoticeResByid" resultType="NoticeResEntity">
+        SELECT
+            *
+        FROM notice_res where id = #{id}
+    </select>
+    <select id="findNoticeRes" resultType="NoticeResEntity">
+
+        SELECT ns.id,ns.title,ns.description,nq.title noticeReqTitle,u.name userName,ns.res_time from notice_res ns
+        INNER JOIN user u
+                   ON ns.user_id = u.id
+        INNER JOIN notice_req nq
+                   on ns.notice_req_id = nq.id
+        where ns.title like "%"#{account}"%" or ns.description like "%"#{account}"%" or nq.title like "%"#{account}"%"
+           or u.name like "%"#{account}"%"
+    </select>
+    <select id="findNoticeResByReqId" resultType="com.snut.material.model.NoticeResEntity">
+        select * from notice_res where notice_req_id = #{id}
+    </select>
+</mapper>
+

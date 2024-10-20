@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.snut.material.dao.user.UserLoginDao">
+
+    <select id="userLogin" resultType="com.snut.material.model.UserEntity">
+        select * from user where account=#{account} and password = #{password} and type = 2
+    </select>
+    <select id="ifAccount" resultType="com.snut.material.model.UserEntity">
+        select * from user where account=#{account}
+    </select>
+</mapper>

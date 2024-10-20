@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace  命名空间 必须唯一-->
+<!--使用接口与xml进行绑定 namespace的值与接口路径相同-->
+<mapper namespace="com.snut.material.dao.message.AdminDao">
+
+
+
+
+    <insert id="saveAdmin" parameterType="AdminEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into user(name,account,password,gender,phone,email,type,time,operator,opertime)
+                    values(#{name},#{account},#{password},#{gender},#{phone},#{email},1,#{time},#{operator},#{opertime})
+    </insert>
+    <update id="updateAdmin" parameterType="AdminEntity">
+        update user set name=#{name},
+                        account=#{account},
+                        gender=#{gender},
+                        phone=#{phone},
+                        email=#{email},
+                        time=#{time},
+                        operator=#{operator},
+                        opertime=#{opertime}
+                    where id = #{id}
+    </update>
+    <update id="changeStata">
+        update user set flag=#{flag} where id = #{row}
+    </update>
+    <update id="updatePassword">
+        update user set password=#{newPassword} where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from user where id = #{id}
+    </delete>
+
+
+    <select id="findAdminList" resultType="AdminEntity">
+        SELECT
+          *
+        FROM user where type = 1 ORDER BY opertime DESC
+    </select>
+    <select id="findAdminByid" resultType="AdminEntity">
+        SELECT
+            *
+        FROM user where id = #{id}
+    </select>
+    <select id="findAdmin" resultType="AdminEntity">
+        select * from user where name like "%"#{account}"%" or account like "%"#{account}"%"
+                              or phone like "%"#{account}"%" or gender like "%"#{account}"%"
+                              or email like "%"#{account}"%" and type = 1
+    </select>
+    <select id="findOldPasswordByUserId" resultType="java.lang.String">
+        select password from user where id = #{id}
+    </select>
+</mapper>
+

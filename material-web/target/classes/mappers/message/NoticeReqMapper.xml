@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace  命名空间 必须唯一-->
+<!--使用接口与xml进行绑定 namespace的值与接口路径相同-->
+<mapper namespace="com.snut.material.dao.message.NoticeReqDao">
+
+
+
+
+    <insert id="saveNoticeReq" parameterType="NoticeReqEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into notice_req(title,description,user_id,req_time)
+                    values(#{title},#{description},#{userId},#{reqTime})
+    </insert>
+    <update id="updateNoticeReq" parameterType="NoticeReqEntity">
+        update notice_req set name=#{name},operator=#{operator},opertime=#{opertime}
+                    where id = #{id}
+    </update>
+    <update id="changeStata">
+        update notice_req set flag=#{flag} where id = #{row}
+    </update>
+    <delete id="delete">
+        delete from notice_req where id = #{id}
+    </delete>
+
+
+    <select id="findNoticeReqList" resultType="NoticeReqEntity">
+        SELECT n.id,n.title,n.description,u.name userName,n.flag,n.req_time from notice_req n
+        INNER JOIN user u
+                   ON n.user_id = u.id
+        ORDER BY req_time DESC
+    </select>
+    <select id="findNoticeReqByid" resultType="NoticeReqEntity">
+        SELECT
+            *
+        FROM notice_req where id = #{id}
+    </select>
+    <select id="findNoticeReq" resultType="NoticeReqEntity">
+        SELECT n.id,n.title,n.description,u.name userName,n.flag,n.req_time from notice_req n
+         INNER JOIN user u
+                    ON n.user_id = u.id
+        where n.title like "%"#{account}"%" or n.description like "%"#{account}"%" or u.name like "%"#{account}"%"
+    </select>
+</mapper>
+

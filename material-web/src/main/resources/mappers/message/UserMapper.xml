@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace  命名空间 必须唯一-->
+<!--使用接口与xml进行绑定 namespace的值与接口路径相同-->
+<mapper namespace="com.snut.material.dao.message.UserDao">
+
+    <insert id="saveUser" parameterType="UserEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into user(name,account,password,gender,phone,email,type,time,operator,opertime)
+        values(#{name},#{account},#{password},#{gender},#{phone},#{email},2,#{time},#{operator},#{opertime})
+    </insert>
+    <update id="updateUser" parameterType="UserEntity">
+        update user set name=#{name},
+                        account=#{account},
+                        gender=#{gender},
+                        img=#{img},
+                        phone=#{phone},
+                        email=#{email},
+                        time=#{time},
+                        operator=#{operator},
+                        opertime=#{opertime}
+        where id = #{id}
+    </update>
+    <update id="changeStata">
+        update user set flag=#{flag} where id = #{row}
+    </update>
+    <update id="userPay">
+        update user set balance = balance + #{num} where id = #{userId}
+    </update>
+    <delete id="delete">
+        delete from user where id = #{id}
+    </delete>
+
+
+    <select id="findUserList" resultType="UserEntity">
+        SELECT
+          *
+        FROM user where type = 2 ORDER BY opertime DESC
+    </select>
+    <select id="findUserByid" resultType="UserEntity">
+        SELECT
+            *
+        FROM user where id = #{id}
+    </select>
+    <select id="findUser" resultType="UserEntity">
+        select * from user where name like "%"#{account}"%" or account like "%"#{account}"%"
+                              or gender like "%"#{account}"%"
+                              or phone like "%"#{account}"%" or email like "%"#{account}"%"
+                              and type = 2
+    </select>
+</mapper>
+

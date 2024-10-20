@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace  命名空间 必须唯一-->
+<!--使用接口与xml进行绑定 namespace的值与接口路径相同-->
+<mapper namespace="com.snut.material.dao.message.CollectionDao">
+
+
+
+
+    <insert id="saveCollection" parameterType="CollectionEntity" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into collection(user_id,material_id,time)
+                    values(#{userId},#{materialId},#{time})
+    </insert>
+    <update id="updateCollection" parameterType="CollectionEntity">
+        update collection set name=#{name},operator=#{operator},opertime=#{opertime}
+                    where id = #{id}
+    </update>
+    <update id="changeStata">
+        update collection set flag=#{flag} where id = #{row}
+    </update>
+    <delete id="delete">
+        delete from collection where id = #{id}
+    </delete>
+    <delete id="deleteCollection">
+        delete from collection where user_id = #{userId} and material_id = #{materialId}
+    </delete>
+
+
+    <select id="findCollectionList" resultType="CollectionEntity">
+        select c.id,m.id materialId,u.name userName,m.title materialTitle,m.img,c.time from collection c
+        INNER JOIN user u
+                   on c.user_id = u.id
+        INNER JOIN material m
+                   on c.material_id = m.id
+        ORDER BY time DESC
+    </select>
+    <select id="findCollectionByid" resultType="CollectionEntity">
+        SELECT
+            *
+        FROM collection where id = #{id}
+    </select>
+    <select id="findCollection" resultType="CollectionEntity">
+        select u.name userName,m.title materialTitle,m.img,c.time from collection c
+        INNER JOIN user u
+                   on c.user_id = u.id
+        INNER JOIN material m
+        on c.material_id = m.id
+        where u.name like "%"#{account}"%" or m.title like "%"#{account}"%"
+    </select>
+    <select id="findUserIsCollection" resultType="com.snut.material.model.CollectionEntity">
+        select * from collection where user_id = #{userId} and material_id = #{materialId}
+    </select>
+</mapper>
+
